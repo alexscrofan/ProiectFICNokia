@@ -1,24 +1,32 @@
 #include <sstream>
 #include <string>
+#include<sys/socket.h>    //socket
+#include<arpa/inet.h> //inet_addr
 #include <iostream>
 //#include <opencv2\highgui.h>
 #include "opencv2/highgui/highgui.hpp"
 //#include <opencv2\cv.h>
 #include "opencv2/opencv.hpp"
-
+#include <unistd.h>
 using namespace std;
 using namespace cv;
 //initial min and max HSV filter values.
 //these will be changed using trackbars
+
+
 int H_MIN = 0;
 int H_MAX = 256;
-int S_MIN = 0;
+int S_MIN = 148;
 int S_MAX = 256;
 int V_MIN = 0;
 int V_MAX = 256;
 
-
-int S_MIN1=147;
+int H_MIN1=169;
+int H_MAX1=256;
+int S_MIN1=0;
+int S_MAX1=256;
+int V_MIN1=0;
+int V_MAX1=256;
 
 
 
@@ -181,14 +189,54 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed) {
 		else putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
 	}
 }
+char message[2];
+void trimite(char s[]){
+   
+   struct sockaddr_in server;
+   int sock;
+   sock = socket(AF_INET , SOCK_STREAM , 0);
+   server.sin_addr.s_addr = inet_addr("193.226.12.217");
+   server.sin_family = AF_INET;
+   server.sin_port = htons( 20232 );
+   
+   
+   if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
+   {
+        cout<<"connect failed. Error";
+   }
+
+    for(int i=0;i<strlen(s);i++)
+    cout<<s[i]<<" ";
+    cout<<endl;
+    for(int i=0;i<strlen(s);i++)
+    {
+      if(s[i]=='f'||s[i]=='s'||s[i]=='l'||s[i]=='r'||s[i]=='b')
+      {cout<<"aici "<<s[i]<<endl;
+        
+        sprintf(message,"%c",s[i]);
+        if( send(sock , message , strlen(message) , 0) < 0)
+        {
+            cout<<"Send failed";
+        }
+        sleep(1);
+      }
+      
+   }
+
+
+}
+
+
+
+
 int main(int argc, char* argv[])
 {
 
 	//some boolean variables for different functionality within this
 	//program
-	bool trackObjects = true;
-	bool useMorphOps = true;
-
+//	bool trackObjects = true;
+//	bool useMorphOps = true;
+/*
 	Point p;
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
@@ -199,6 +247,7 @@ int main(int argc, char* argv[])
 	//x and y values for the location of the object
 	int x = 0, y = 0;
 	//create slider bars for HSV filtering
+ 
 	createTrackbars();
 	//video capture object to acquire webcam feed
 	VideoCapture capture;
@@ -210,46 +259,51 @@ int main(int argc, char* argv[])
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
 
-	int counter=0;
+*/ 
 
-	
-	while (1) {
 
-		//store image to matrix
-		capture.read(cameraFeed);
-		//convert frame from BGR to HSV colorspace
-		cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-		//filter HSV image between values and store filtered image to
-		//threshold matrix
-		if(counter==0){
-		inRange(HSV, Scalar(H_MIN, S_MIN, V_MIN), Scalar(H_MAX, S_MAX, V_MAX), threshold);
-			counter=1;
-		}
-		else {
-		inRange(HSV,Scalar(H_MIN,S_MIN1,V_MIN),Scalar(H_MAX,S_MAX,V_MAX),threshold);
-		counter=0;		
-		}
-		//perform morphological operations on thresholded image to eliminate noise
-		//and emphasize the filtered object(s)
-		if (useMorphOps)
-			morphOps(threshold);
-		//pass in thresholded frame to our object tracking function
-		//this function will return the x and y coordinates of the
-		//filtered object
-		if (trackObjects)
-			trackFilteredObject(x, y, threshold, cameraFeed);
+   
+     int counter=0;
+      trimite("flffsfffffffffffffffffffffffffffffffs");
 
-		//show frames
-		imshow(windowName2, threshold);
-		imshow(windowName, cameraFeed);
-//		imshow(windowName1, HSV);
-		setMouseCallback("Original Image", on_mouse, &p);
-		//delay 30ms so that screen can refresh.
-		
-		//image will not appear without this waitKey() command
-		waitKey(30);
-	}
-
+	/*
+    	while (1) {
+    
+    		//store image to matrix
+    		capture.read(cameraFeed);
+    		//convert frame from BGR to HSV colorspace
+    		cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+    		//filter HSV image between values and store filtered image to
+    		//threshold matrix
+    		if(counter==0){
+    			inRange(HSV, Scalar(H_MIN, S_MIN, V_MIN), Scalar(H_MAX, S_MAX, V_MAX), threshold);
+    			counter=1;
+    		}
+    		else {
+    
+    			inRange(HSV,Scalar(H_MIN1,S_MIN1,V_MIN1),Scalar(H_MAX1,S_MAX1,V_MAX1),threshold);
+    			counter=0;	
+    		}
+    		//perform morphological operations on thresholded image to eliminate noise
+    		//and emphasize the filtered object(s)
+    		if (useMorphOps)
+    			morphOps(threshold);
+    		//pass in thresholded frame to our object tracking function
+    		//this function will return the x and y coordinates of the
+    		//filtered object
+    		if (trackObjects)
+    			trackFilteredObject(x, y, threshold, cameraFeed);
+    
+    		//show frames
+    		imshow(windowName2, threshold);
+    		imshow(windowName, cameraFeed);
+    //		imshow(windowName1, HSV);
+    		setMouseCallback("Original Image", on_mouse, &p);
+    		//delay 30ms so that screen can refresh.
+    		
+    		//image will not appear without this waitKey() command
+    		waitKey(30);
+    	}
+  */
 	return 0;
 }
-

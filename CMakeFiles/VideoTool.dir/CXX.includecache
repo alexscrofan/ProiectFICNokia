@@ -6,17 +6,23 @@
 
 #IncludeRegexTransform: 
 
-/home/cloud/mm/fic/VideoTool.cpp
+/home/cloud/Desktop/racheta/fic/VideoTool.cpp
 sstream
 -
 string
 -
+sys/socket.h
+-
+arpa/inet.h
+-
 iostream
 -
 opencv2/highgui/highgui.hpp
-/home/cloud/mm/fic/opencv2/highgui/highgui.hpp
+/home/cloud/Desktop/racheta/fic/opencv2/highgui/highgui.hpp
 opencv2/opencv.hpp
-/home/cloud/mm/fic/opencv2/opencv.hpp
+/home/cloud/Desktop/racheta/fic/opencv2/opencv.hpp
+unistd.h
+-
 
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h
