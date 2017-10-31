@@ -220,8 +220,9 @@ void trimite(char s[]){
         }
         sleep(1);
       }
-      
    }
+   sprintf(message,"s");
+   send(sock,message,strlen(message),0);
 
 
 }
@@ -264,7 +265,7 @@ int main(int argc, char* argv[])
 
    
      int counter=0;
-      trimite("flffsfffffffffffffffffffffffffffffffs");
+      trimite("flff");
 
 	/*
     	while (1) {
