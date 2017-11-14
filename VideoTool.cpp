@@ -13,6 +13,7 @@ using namespace cv;
 //initial min and max HSV filter values.
 //these will be changed using trackbars
 
+int xmeu,ymeu,xadv,yadv;
 
 int H_MIN = 0;
 int H_MAX = 256;
@@ -227,7 +228,11 @@ void trimite(char s[]){
 
 }
 
+void castiga(int xmeu,int ymeu,int xadv,int yadv){
 
+  printf("am intrat si aici cu valorile %d %d %d %d\n",xmeu,ymeu,xadv,yadv);
+
+}
 
 
 int main(int argc, char* argv[])
@@ -235,9 +240,9 @@ int main(int argc, char* argv[])
 
 	//some boolean variables for different functionality within this
 	//program
-//	bool trackObjects = true;
-//	bool useMorphOps = true;
-/*
+	bool trackObjects = true;
+	bool useMorphOps = true;
+
 	Point p;
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
@@ -260,15 +265,13 @@ int main(int argc, char* argv[])
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
 
-*/ 
 
 
    
      int counter=0;
-      trimite("flff");
+      //trimite("f");
 
-	/*
-    	while (1) {
+		while (1) {
     
     		//store image to matrix
     		capture.read(cameraFeed);
@@ -294,17 +297,25 @@ int main(int argc, char* argv[])
     		//filtered object
     		if (trackObjects)
     			trackFilteredObject(x, y, threshold, cameraFeed);
-    
+       if(counter==1){
+         xmeu=x;
+         ymeu=y;
+       }
+       else if(counter==0){
+         xadv=x;
+         yadv=y;
+       }
+        castiga(xmeu,ymeu,xadv,yadv);
     		//show frames
     		imshow(windowName2, threshold);
     		imshow(windowName, cameraFeed);
-    //		imshow(windowName1, HSV);
+    		imshow(windowName1, HSV);
     		setMouseCallback("Original Image", on_mouse, &p);
     		//delay 30ms so that screen can refresh.
     		
     		//image will not appear without this waitKey() command
     		waitKey(30);
     	}
-  */
+
 	return 0;
 }
