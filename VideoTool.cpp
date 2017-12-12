@@ -13,7 +13,16 @@ using namespace cv;
 //initial min and max HSV filter values.
 //these will be changed using trackbars
 
-int xmeu,ymeu,xadv,yadv;
+int xmeu,ymeu,xadv,yadv,xmeu1,ymeu1;
+
+
+
+int H_MIN2 = 0;
+int H_MAX2 = 256;
+int S_MIN2 = 148;
+int S_MAX2 = 256;
+int V_MIN2 = 0;
+int V_MAX2 = 256; 
 
 int H_MIN = 0;
 int H_MAX = 256;
@@ -224,15 +233,9 @@ void trimite(char s[]){
    }
    sprintf(message,"s");
    send(sock,message,strlen(message),0);
-
-
+   
 }
 
-void castiga(int xmeu,int ymeu,int xadv,int yadv){
-
-  printf("am intrat si aici cu valorile %d %d %d %d\n",xmeu,ymeu,xadv,yadv);
-
-}
 
 
 int main(int argc, char* argv[])
@@ -250,6 +253,7 @@ int main(int argc, char* argv[])
 	Mat HSV;
 	//matrix storage for binary threshold image
 	Mat threshold;
+  Mat threshold1;
 	//x and y values for the location of the object
 	int x = 0, y = 0;
 	//create slider bars for HSV filtering
@@ -265,10 +269,8 @@ int main(int argc, char* argv[])
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
 
-
-
-   
      int counter=0;
+     int counter1=0;
       //trimite("f");
 
 		while (1) {
@@ -281,6 +283,7 @@ int main(int argc, char* argv[])
     		//threshold matrix
     		if(counter==0){
     			inRange(HSV, Scalar(H_MIN, S_MIN, V_MIN), Scalar(H_MAX, S_MAX, V_MAX), threshold);
+          inRange(HSV, Scalar(H_MIN2,S_MIN2,V_MIN2), Scalar(H_MAX2,S_MAX2,V_MAX),threshold1);
     			counter=1;
     		}
     		else {
@@ -295,17 +298,126 @@ int main(int argc, char* argv[])
     		//pass in thresholded frame to our object tracking function
     		//this function will return the x and y coordinates of the
     		//filtered object
-    		if (trackObjects)
-    			trackFilteredObject(x, y, threshold, cameraFeed);
+    		if (trackObjects){
+    			trackFilteredObject(x, y, threshold, cameraFeed);//aici detectez centrul robotului
+          if(counter==1){
+           trackFilteredObject(xmeu1, ymeu1, threshold1, cameraFeed);//aici am coordonatele de la fata
+          }  
+       }
        if(counter==1){
          xmeu=x;
          ymeu=y;
+         
+         
+         int distantax=xmeu-xadv;
+         int distantay=ymeu-yadv;
+         
+         if(xmeu1-xmeu0>=0&&ymeu1-ymeu>=0){
+           cadranulmeu=1;
+           //cadranul 1
+           if(distantax>=0&&distantay<0){
+           
+             //turn left multiple times(pana ajungi in cadranul 2
+           }
+           else if(distantax>=0&&distantay>=0){
+             
+             //turn right multiple times(pana ajungi in cadranul 3
+           
+           }
+           else if(distantax<0&&distantay>=0){
+           
+             //turn right
+           
+           }
+           else if(distantax<0&&distantay<0){
+           
+             //turn forward
+           
+           }
+         
+         }
+         else if(xmeu1-xmeu>=0&&ymeu1-ymeu<0){
+           cadranulmeu=4;
+         //cadranul 4
+         
+          if(distantax>=0&&distantay<0){
+           
+             //turn left multiple times(pana ajungi in cadranul 2
+           }
+           else if(distantax>=0&&distantay>=0){
+             
+             //turn left (pana ajungi in cadranul 3
+           
+           }
+           else if(distantax<0&&distantay>=0){
+           
+             //go forward
+           
+           }
+           else if(distantax<0&&distantay<0){
+           
+             //turn right
+           
+           }
+         
+         }
+         else if(xmeu1-xmeu<0&&ymeu1-ymeu<0){
+           cadranulmeu=3;
+         //cadranul 3
+         
+            if(distantax>=0&&distantay<0){
+           
+             //turn right(pana ajungi in cadranul 2
+           }
+           else if(distantax>=0&&distantay>=0){
+             
+             //go forward
+           
+           }
+           else if(distantax<0&&distantay>=0){
+           
+             //turn left
+           
+           }
+           else if(distantax<0&&distantay<0){
+           
+             //turn left multiple time
+           
+           }
+         
+         
+         }
+         else if(xmeu1-xmeu<0&&ymeu1-ymeu>=0){
+          cadranulmeu=2;
+         //cadranul 2
+         
+            if(distantax>=0&&distantay<0){
+           
+             //go forward
+           }
+           else if(distantax>=0&&distantay>=0){
+             
+             //turn left
+           
+           }
+           else if(distantax<0&&distantay>=0){
+           
+             //turn right multiple time
+           
+           }
+           else if(distantax<0&&distantay<0){
+           
+             //turn right
+           
+           }
+         
+         }
        }
        else if(counter==0){
          xadv=x;
          yadv=y;
+         }
        }
-        castiga(xmeu,ymeu,xadv,yadv);
     		//show frames
     		imshow(windowName2, threshold);
     		imshow(windowName, cameraFeed);
